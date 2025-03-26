@@ -73,8 +73,8 @@ class Food:
             random.randint(0, GRID_SIZE - 1)]
       if self.pos not in snake_body:
         break
-    self.weight = random.randint(1, 3)  # Different food weights
-    self.timer = 50  # Food disappearance timer
+    self.weight = random.randint(1, 3)  
+    self.timer = 50 
 
   def update_timer(self):
     if self.timer > 0:

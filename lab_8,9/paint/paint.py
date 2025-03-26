@@ -24,10 +24,10 @@ colors = [BLACK, RED, GREEN, BLUE, YELLOW, PURPLE, CYAN, ORANGE, PINK, BROWN]
 current_color = BLACK
 
 # Variables
-drawing = False  
+drawing = False
 mode = "pencil"  # Current drawing mode: pencil, rect, circle, line, square, r_triangle, e_triangle, rhombus
-start_pos = None 
-prev_pos = None  
+start_pos = None
+prev_pos = None
 thickness = 2  # Thickness of the drawing tool
 
 # Main loop control
@@ -55,7 +55,7 @@ def draw_status():
         screen.blit(index_text, (rect_x + 5, 35))  # Display color index
         if color == current_color:
             # Highlight selected color
-            pygame.draw.rect(screen, BLACK, (rect_x - 2, 8, 24, 24), 2) 
+            pygame.draw.rect(screen, BLACK, (rect_x - 2, 8, 24, 24), 2)
 
 
 while running:
@@ -131,13 +131,19 @@ while running:
                                abs(end_pos[1] - start_pos[1]))
                     pygame.draw.rect(canvas, current_color, pygame.Rect(
                         start_pos, (side, side)), thickness)
-                elif mode == "r_triangle": 
+                elif mode == "r_triangle":
                     pygame.draw.polygon(canvas, current_color, [
                                         start_pos, (start_pos[0], end_pos[1]), end_pos], thickness)
                 elif mode == "e_triangle":
-                    pygame.draw.polygon(canvas, current_color, [start_pos, (start_pos[0] - (
-                        end_pos[0] - start_pos[0]) // 2, end_pos[1]), (end_pos[0] + (end_pos[0] - start_pos[0]) // 2, end_pos[1])], thickness)
-                elif mode == "rhombus": 
+                    side_length = int(
+                        ((end_pos[0] - start_pos[0])**2 + (end_pos[1] - start_pos[1])**2) ** 0.5)
+                    pygame.draw.polygon(canvas, current_color, [
+                        start_pos,
+                        (start_pos[0] + side_length, start_pos[1]),
+                        (start_pos[0] + side_length // 2,
+                         start_pos[1] - int(side_length * (3**0.5) / 2))
+                    ], thickness)
+                elif mode == "rhombus":
                     pygame.draw.polygon(canvas, current_color, [(start_pos[0], start_pos[1] - (end_pos[1] - start_pos[1]) // 2), (start_pos[0] - (end_pos[0] - start_pos[0]) // 2,
                                         start_pos[1]), (start_pos[0], start_pos[1] + (end_pos[1] - start_pos[1]) // 2), (start_pos[0] + (end_pos[0] - start_pos[0]) // 2, start_pos[1])], thickness)
 
