@@ -119,9 +119,8 @@ def display_message(text, y_offset=0, font_size=28):
     screen.blit(message, (WINDOW_SIZE // 2 - message.get_width() //
                 2, WINDOW_SIZE // 2 + y_offset))
 
+
 # User login
-
-
 def user_login():
     conn = connect()
     cursor = conn.cursor()
@@ -146,9 +145,8 @@ def user_login():
         pygame.time.wait(2000)
         return username, 1, 0
 
+
 # Save game state
-
-
 def save_game(username, level, score):
     conn = connect()
     cursor = conn.cursor()
@@ -160,15 +158,25 @@ def save_game(username, level, score):
     pygame.display.flip()
     pygame.time.wait(2000)
 
+# Reset player data in the database
+
+
+def reset_player(username):
+    conn = connect()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE user_score SET level = %s, score = %s WHERE username = %s", (1, 0, username))
+    conn.commit()
+    conn.close()
+
 
 def draw_walls(walls):
     for wall in walls:
         pygame.draw.rect(
             screen, RED, (wall[0] * BLOCK_SIZE, wall[1] * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE))
 
+
 # Classes
-
-
 class Snake:
     def __init__(self):
         self.body = [[10, 10]]
@@ -283,6 +291,15 @@ while running:
         continue
 
     running = snake.move()
+    if not running:  # If the player loses
+        reset_player(username)  # Reset player data in the database
+        screen.fill(WHITE)
+        # Display "Game Over" message
+        display_message("Game Over!", 0, font_size=36)
+        pygame.display.flip()
+        pygame.time.wait(3000)  # Wait for 3 seconds before exiting
+        break
+
     food.update_timer()
 
     # Draw grid
